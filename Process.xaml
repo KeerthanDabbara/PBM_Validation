@@ -1,0 +1,1320 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Process" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:p="http://schemas.uipath.com/workflow/activities/cv" xmlns:p1="http://schemas.uipath.com/workflow/activities/ocr" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Drawing;assembly=System.Drawing" xmlns:sd1="clr-namespace:System.Data;assembly=System.Data" xmlns:si="clr-namespace:System.IO;assembly=mscorlib" xmlns:uc="clr-namespace:UiPath.CV;assembly=UiPath.CV" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property sap2010:Annotation.AnnotationText="Transaction item to be processed." Name="in_TransactionItem" Type="InArgument(ui:QueueItem)" />
+    <x:Property sap2010:Annotation.AnnotationText="Dictionary structure to store configuration data of the process (settings, constants and assets)." Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_TransactionNumber" Type="InArgument(x:Int32)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1104,5960.8</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ProcessTransaction_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="54">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.UIAutomationNext.Enums</x:String>
+      <x:String>UiPath.Excel</x:String>
+      <x:String>UiPath.CV</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>UiPath.Excel.Activities</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="26">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualStudio.Services.Common</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.CV</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Invoke major steps of the business process, which are usually implemented by multiple subworkflows.&#xA;&#xA;If a BusinessRuleException is thrown, the transaction is skipped. &#xA;If another kind of exception occurs, the current transaction can be retried. " DisplayName="Process" sap:VirtualizedContainerService.HintSize="1036,5896" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:Boolean" Name="TickNotFound" />
+      <Variable x:TypeArguments="sd1:DataTable" Default="[New System.Data.DataTable]" Name="ExtractDataTable" />
+      <Variable x:TypeArguments="x:String" Name="PBM_PayorType" />
+      <Variable x:TypeArguments="x:Boolean" Name="insurnceTab" />
+      <Variable x:TypeArguments="x:String" Name="io_FilePath" />
+      <Variable x:TypeArguments="ui:Image" Name="ScreenShot" />
+      <Variable x:TypeArguments="x:String" Default="\\nasv0608.uhc.com\Billing\PbmScreenshots" Name="in_Folder" />
+      <Variable x:TypeArguments="si:FileInfo" Name="ScreenshotFileInfo" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:Comment DisplayName="Comment (placeholder)" sap:VirtualizedContainerService.HintSize="994.4,56" sap2010:WorkflowViewState.IdRef="Comment_1" Text="//  Invoke steps of the process" />
+    <ui:UiElementExists DisplayName="Element Exists 'cpr.exe Patient'" Exists="[insurnceTab]" sap:VirtualizedContainerService.HintSize="994.4,107.2" sap2010:WorkflowViewState.IdRef="UiElementExists_3">
+      <ui:UiElementExists.Target>
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="6f7b5d5d-5038-429c-94dd-7d71bae12e60" InformativeScreenshot="75d3dba8d54042689ca87148c2d6d76f" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;" TimeoutMS="2000">
+          <ui:Target.WaitForReady>
+            <InArgument x:TypeArguments="ui:WaitForReady" />
+          </ui:Target.WaitForReady>
+        </ui:Target>
+      </ui:UiElementExists.Target>
+    </ui:UiElementExists>
+    <If Condition="[insurnceTab]" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="If_2">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Sequence sap:VirtualizedContainerService.HintSize="242,234" sap2010:WorkflowViewState.IdRef="Sequence_16">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DisplayName="Send Hotkey 'cpr.exe Patient'" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="SendHotkey_3" Key="f2" KeyModifiers="None" SpecialKey="True">
+            <ui:SendHotkey.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="59b0d5ce-5381-4dc9-b514-bbc2841a3ce3" InformativeScreenshot="75d3dba8d54042689ca87148c2d6d76f" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+                <ui:Target.WaitForReady>
+                  <InArgument x:TypeArguments="ui:WaitForReady" />
+                </ui:Target.WaitForReady>
+              </ui:Target>
+            </ui:SendHotkey.Target>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:SendHotkey>
+          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" ContinueOnError="True" DisplayName="Send Hotkey 'cpr.exe Patient'" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="SendHotkey_4" Key="f2" KeyModifiers="None" SpecialKey="True">
+            <ui:SendHotkey.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="59b0d5ce-5381-4dc9-b514-bbc2841a3ce3" InformativeScreenshot="75d3dba8d54042689ca87148c2d6d76f" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;" TimeoutMS="1000">
+                <ui:Target.WaitForReady>
+                  <InArgument x:TypeArguments="ui:WaitForReady" />
+                </ui:Target.WaitForReady>
+              </ui:Target>
+            </ui:SendHotkey.Target>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:SendHotkey>
+        </Sequence>
+      </If.Then>
+    </If>
+    <ui:RetryScope ContinueOnError="True" DisplayName="Retry Scope" sap:VirtualizedContainerService.HintSize="994.4,912.8" sap2010:WorkflowViewState.IdRef="RetryScope_1" NumberOfRetries="2" RetryInterval="00:00:05">
+      <ui:RetryScope.ActivityBody>
+        <ActivityAction>
+          <Sequence DisplayName="Action" sap:VirtualizedContainerService.HintSize="475.2,645.6" sap2010:WorkflowViewState.IdRef="Sequence_3">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Remote Desktop: *** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 992164  •  ORX CPR" sap:VirtualizedContainerService.HintSize="433.6,552.8" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" OpenMode="Never" Version="V1">
+              <uix:NApplicationCard.Body>
+                <ActivityAction x:TypeArguments="x:Object">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,261.6" sap2010:WorkflowViewState.IdRef="Sequence_2">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <uix:NClick ClickType="Single" DisplayName="Click 'Find Ticket (F6)'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_1" KeyModifiers="None" MouseButton="Left">
+                      <uix:NClick.Target>
+                        <uix:TargetAnchorable DesignTimeRectangle="23, 651, 188, 34" ElementType="Button" FriendlyName="'Find Ticket (F6)'" FullSelectorArgument="&lt;ctrl name='Find Ticket (F6)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='Find Ticket (F6)' role='push button' automationid='' check:text='Find Ticket (F6)' /&gt;" ImageBase64="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" InformativeScreenshot="9d2748b27facc964f99921352b6d14e9.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='CPR+ &amp;apos;Ready-to-Bill&amp;apos; Manager' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="Find Ticket (F6)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                      </uix:NClick.Target>
+                    </uix:NClick>
+                  </Sequence>
+                </ActivityAction>
+              </uix:NApplicationCard.Body>
+              <uix:NApplicationCard.TargetApp>
+                <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="9cbc6916e3ae629a5580b69dbfb4e102.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*'/&gt;" />
+              </uix:NApplicationCard.TargetApp>
+            </uix:NApplicationCard>
+          </Sequence>
+        </ActivityAction>
+      </ui:RetryScope.ActivityBody>
+      <ui:RetryScope.Condition>
+        <ActivityFunc x:TypeArguments="x:Boolean">
+          <ui:UiElementExists Exists="{x:Null}" DisplayName="Element Exists 'cpr.exe Search'" sap:VirtualizedContainerService.HintSize="333.6,107.2" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
+            <ui:UiElementExists.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="b3e3a747-9910-4c17-84c5-47f5ff773a3a" InformativeScreenshot="c063421b35c4ecab8bb079bf02e50af4" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Search for Delivery Ticket' /&gt;">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+                <ui:Target.WaitForReady>
+                  <InArgument x:TypeArguments="ui:WaitForReady" />
+                </ui:Target.WaitForReady>
+              </ui:Target>
+            </ui:UiElementExists.Target>
+          </ui:UiElementExists>
+        </ActivityFunc>
+      </ui:RetryScope.Condition>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:RetryScope>
+    <ui:TypeInto AlterIfDisabled="{x:Null}" DelayBetweenKeys="{x:Null}" SendWindowMessages="{x:Null}" SimulateType="{x:Null}" Activate="True" ClickBeforeTyping="True" DelayBefore="3000" DelayMS="1000" DisplayName="Type Into 'editable text  txtfind'" EmptyField="False" sap:VirtualizedContainerService.HintSize="994.4,135.2" sap2010:WorkflowViewState.IdRef="TypeInto_1" Text="[in_TransactionItem.SpecificContent(&quot;Tickets&quot;).tostring]">
+      <ui:TypeInto.Target>
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="fb386c27-df78-46e9-a543-41a88737c988" InformativeScreenshot="4753cb734a09abd65464e3e9c1682c84" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Search for Delivery Ticket' /&gt;&lt;ctrl name='txtfind' role='editable text' /&gt;" WaitForReady="COMPLETE">
+          <ui:Target.TimeoutMS>
+            <InArgument x:TypeArguments="x:Int32" />
+          </ui:Target.TimeoutMS>
+        </ui:Target>
+      </ui:TypeInto.Target>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:TypeInto>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_2">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="375.2,145.6" sap2010:WorkflowViewState.IdRef="Sequence_17">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:TakeScreenshot WaitBefore="{x:Null}" DisplayName="Take Screenshot" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="TakeScreenshot_2" Screenshot="[ScreenShot]">
+            <ui:TakeScreenshot.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="e0439dc4-02f0-4abe-8c86-d37a5ff2cd4e" WaitForReady="INTERACTIVE">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+              </ui:Target>
+            </ui:TakeScreenshot.Target>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:TakeScreenshot>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_3">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="524.8,145.6" sap2010:WorkflowViewState.IdRef="Sequence_18">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If Condition="[String.IsNullOrEmpty(io_FilePath)]" DisplayName="If no screenshot filepath" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="If_5">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <Assign DisplayName="Initialize screenshot filepath" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_4">
+                <Assign.To>
+                  <OutArgument x:TypeArguments="x:String">[io_FilePath]</OutArgument>
+                </Assign.To>
+                <Assign.Value>
+                  <InArgument x:TypeArguments="x:String">[Path.Combine(in_Folder, "ExceptionScreenshot_"+Now.ToString("yyMMdd.hhmmss")+".png")]</InArgument>
+                </Assign.Value>
+              </Assign>
+            </If.Then>
+          </If>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_4">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="304,152.8" sap2010:WorkflowViewState.IdRef="Sequence_19">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <Assign DisplayName="Initialize ScreenshotFileInfo" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_5">
+            <Assign.To>
+              <OutArgument x:TypeArguments="si:FileInfo">[ScreenshotFileInfo]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="si:FileInfo">[New FileInfo(io_FilePath)]</InArgument>
+            </Assign.Value>
+          </Assign>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_5">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="524.8,145.6" sap2010:WorkflowViewState.IdRef="Sequence_20">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <If Condition="[Not Directory.Exists(ScreenshotFileInfo.DirectoryName)]" DisplayName="If screenshot folder does not exist, create it" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="If_6">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <If.Then>
+              <ui:CreateDirectory ContinueOnError="{x:Null}" DisplayName="Create directory" sap:VirtualizedContainerService.HintSize="334,84" sap2010:WorkflowViewState.IdRef="CreateDirectory_2" Path="[ScreenshotFileInfo.DirectoryName]" />
+            </If.Then>
+          </If>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_6">
+      <ui:CommentOut.Body>
+        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="375.2,145.6" sap2010:WorkflowViewState.IdRef="Sequence_21">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:SaveImage DisplayName="Save Image" FileName="[io_FilePath]" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="SaveImage_2" Image="[ScreenShot]">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:SaveImage>
+        </Sequence>
+      </ui:CommentOut.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:CommentOut>
+    <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Remote Desktop: *** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 992164  •  ORX CPR" sap:VirtualizedContainerService.HintSize="994.4,552.8" sap2010:WorkflowViewState.IdRef="NApplicationCard_2" OpenMode="Never" Version="V1">
+      <uix:NApplicationCard.Body>
+        <ActivityAction x:TypeArguments="x:Object">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,261.6" sap2010:WorkflowViewState.IdRef="Sequence_4">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <uix:NClick ClickType="Single" DelayAfter="2" DelayBefore="2" DisplayName="Click 'Search (F2)'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_2" KeyModifiers="None" MouseButton="Left">
+              <uix:NClick.Target>
+                <uix:TargetAnchorable DesignTimeRectangle="220, 139, 188, 34" ElementType="Button" FriendlyName="'Search (F2)'" FullSelectorArgument="&lt;ctrl name='Search (F2)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='Search (F2)' role='push button' automationid='' check:text='Search (F2)' /&gt;" ImageBase64="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" InformativeScreenshot="978a0c235d205074aae47c7682b65ac0.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Search for Delivery Ticket' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="Search (F2)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+              </uix:NClick.Target>
+            </uix:NClick>
+          </Sequence>
+        </ActivityAction>
+      </uix:NApplicationCard.Body>
+      <uix:NApplicationCard.TargetApp>
+        <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="78ace8c257ed6e0c71de798ad7408cee.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*'/&gt;" />
+      </uix:NApplicationCard.TargetApp>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </uix:NApplicationCard>
+    <ui:UiElementExists DisplayName="Element Exists 'cpr.exe Search'" Exists="[TickNotFound]" sap:VirtualizedContainerService.HintSize="994.4,52.8" sap2010:WorkflowViewState.IdRef="UiElementExists_2">
+      <ui:UiElementExists.Target>
+        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="4da21375-53ec-4d62-afd0-28c21b5f0799" InformativeScreenshot="a15edf82f786786d3e53c4f409e6bebd" Selector="&lt;wnd app='cpr.exe' cls='#32770' isremoteapp='1' title='Search for Delivery Ticket' /&gt;" TimeoutMS="3000">
+          <ui:Target.WaitForReady>
+            <InArgument x:TypeArguments="ui:WaitForReady" />
+          </ui:Target.WaitForReady>
+        </ui:Target>
+      </ui:UiElementExists.Target>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:UiElementExists>
+    <If Condition="[TickNotFound]" sap:VirtualizedContainerService.HintSize="994.4,3113.6" sap2010:WorkflowViewState.IdRef="If_1">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <Sequence sap:VirtualizedContainerService.HintSize="475.2,604" sap2010:WorkflowViewState.IdRef="Sequence_7">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Remote Desktop: *** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 992164  •  ORX CPR" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="NApplicationCard_3" OpenMode="Never" Version="V1">
+            <uix:NApplicationCard.Body>
+              <ActivityAction x:TypeArguments="x:Object">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,261.6" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <uix:NClick ClickType="Single" DisplayName="Click 'OK'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_3" KeyModifiers="None" MouseButton="Left">
+                    <uix:NClick.Target>
+                      <uix:TargetAnchorable DesignTimeRectangle="264, 153, 110, 33" ElementType="Button" FriendlyName="'OK'" FullSelectorArgument="&lt;wnd ctrlid='2' title='OK' /&gt;" FuzzySelectorArgument="&lt;wnd ctrlid='2' title='OK' check:text='OK' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAAHIAAAAlCAYAAACeVr0yAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAALYSURBVHhe7ZstkKswGEUrKyuxlZWVWGQlEotEIrGRSCQWGRkZGxkZia1cWXn3hv4su/TtrHoDmYgzLSGk0zm9yZfMdHe73RDZPlFkILxEfnx8RDbEXKLnJdI5B6VUZANorRcyFyKttZEVY4yZPP0q0pu+Xq+RFfMMXBS5caLIQIgiAyGKDIQoMhDCFTmOGK2GlBLDMExIflFl2T4++/G9s9BSwbhn+73NKAmpWdqzfTH2CglT5EOibXMckwT7/X4iOZ2RCQ3zkmmgB4Fin6IZKM9d2c5X2aJOD0iKDr2yy/FXSJgiDdMkCkrMUHZMpDbcMCvIXqDOjsgF7xuftKVIIwXaKkPWSCjj4PijePsZKyNAkQ5maCAKyqjvwtxzyrQKminN0hrtwMT+EKlkB9FUyGvB59xsCl4/4Yl0GgNllFkBYfgF5zI4bY6mR3XO0TCpapyJbDvUdY2yEWik+T7mBghPpB3QVTXyjKni9fjtvi9kNNqLF8cCyD5E7k4o8hTnvEHV+aTOn9kGYYpsGuQsVAyvlyIVRSaoGhYyXDv1QOm7HQ77HdKyQ6fZ59sz2yDcRKa/JTKbEimfidyfUdUlLmmOgjIHO39mG4QncuTeUVSoLlwH9bs1skN5uq+Rer5G9hK9qFHlFS5VD83+W0pmeCJZtVq/hSgvSAufOlatj3ZnBvQlq1muny0Lmp9Vq9EKA2UWeYmiexwSLMZfJwGKJNxmqLZGdi5YvPToppOdFp2goDP3lu39hOfdPtLLHtjvnJUQ3KLojcgMU6THGbi+wOmY4HA4TBwpsZJX2Nd0a6ZTnDK5QMi7SN/uDKfZMsExq9nOcebjrpRwRfpjOq6J1vhTnQfWTmvmV8J8Hz/l+vav5I3+PX8Ixt5PdmIiI/+NKDIQoshAiCIDIYoMhCgyEKLIQPiTSN/Bv0bWy5/+MuA7RLbBP0X6G5Ft8VZkZNtEkYEQRQbBDZ9UbQfv9lyj1QAAAABJRU5ErkJggg==" InformativeScreenshot="d5aca3e31d118abd6c0db4cf21a024d0.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='#32770' isremoteapp='1' title='Search for Delivery Ticket' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="OK" TextMethod="AttributeText" TextSelector="&lt;wnd /&gt;" />
+                    </uix:NClick.Target>
+                  </uix:NClick>
+                </Sequence>
+              </ActivityAction>
+            </uix:NApplicationCard.Body>
+            <uix:NApplicationCard.TargetApp>
+              <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="3be9ffbccd04bbc8b360435021533daa.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*'/&gt;" />
+            </uix:NApplicationCard.TargetApp>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </uix:NApplicationCard>
+          <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="433.6,418.4" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_1" WorkbookPath="[in_Config(&quot;InputDts&quot;).ToString]">
+            <ui:ExcelApplicationScope.Body>
+              <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,308.8" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:ExcelWriteCell Cell="[&quot;B&quot;+(in_Transactionnumber+1).ToString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_1" SheetName="Sheet2" Text="[in_TransactionItem.SpecificContent(&quot;Tickets&quot;).ToString]" />
+                  <ui:ExcelWriteCell Cell="[&quot;C&quot;+(in_Transactionnumber+1).ToString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_2" SheetName="Sheet2" Text="Ticket not found" />
+                </Sequence>
+              </ActivityAction>
+            </ui:ExcelApplicationScope.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:ExcelApplicationScope>
+        </Sequence>
+      </If.Then>
+      <If.Else>
+        <Sequence sap:VirtualizedContainerService.HintSize="475.2,2964" sap2010:WorkflowViewState.IdRef="Sequence_10">
+          <Sequence.Variables>
+            <Variable x:TypeArguments="x:String" Default="\\nasv0608.uhc.com\Billing\PbmScreenshots1" Name="in_Folder1" />
+            <Variable x:TypeArguments="x:String" Name="io_FilePath1" />
+            <Variable x:TypeArguments="ui:Image" Name="ScreenShot1" />
+            <Variable x:TypeArguments="si:FileInfo" Name="ScreenshotFileInfo1" />
+          </Sequence.Variables>
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Remote Desktop: *** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 992164  •  ORX CPR" sap:VirtualizedContainerService.HintSize="433.6,967.2" sap2010:WorkflowViewState.IdRef="NApplicationCard_4" OpenMode="Never" Version="V1">
+            <uix:NApplicationCard.Body>
+              <ActivityAction x:TypeArguments="x:Object">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,676" sap2010:WorkflowViewState.IdRef="Sequence_8">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <uix:NClick ClickType="Single" DelayAfter="2" DisplayName="Click 'View Patient Menu (F4)'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_4" KeyModifiers="None" MouseButton="Left">
+                    <uix:NClick.Target>
+                      <uix:TargetAnchorable DesignTimeRectangle="22, 686, 187, 34" ElementType="Button" FriendlyName="'View Patient Menu (F4)'" FullSelectorArgument="&lt;ctrl name='View Patient Menu (F4)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='View Patient Menu (F4)' role='push button' automationid='' check:text='View Patient Menu (F4)' /&gt;" ImageBase64="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" InformativeScreenshot="6470ed6a768e2fa79393e74847bc7a17.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='CPR+ &amp;apos;Ready-to-Bill&amp;apos; Manager' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="View Patient Menu (F4)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;">
+                        <uix:TargetAnchorable.Anchors>
+                          <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                            <uix:Target DesignTimeRectangle="22, 651, 187, 34" ElementType="Button" FriendlyName="'Find Ticket (F6)'" FullSelectorArgument="&lt;ctrl name='Find Ticket (F6)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='Find Ticket (F6)' role='push button' automationid='' check:text='Find Ticket (F6)' /&gt;" ImageBase64="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" SearchSteps="Selector, FuzzySelector, Image" Text="Find Ticket (F6)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                          </scg:List>
+                        </uix:TargetAnchorable.Anchors>
+                      </uix:TargetAnchorable>
+                    </uix:NClick.Target>
+                  </uix:NClick>
+                  <uix:NClick ClickType="Single" ContinueOnError="True" DelayAfter="2" DisplayName="Click 'OK'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_5" KeyModifiers="None" MouseButton="Left">
+                    <uix:NClick.Target>
+                      <uix:TargetAnchorable DesignTimeRectangle="274, 313, 158, 34" ElementType="Button" FriendlyName="'OK'" FullSelectorArgument="&lt;ctrl name='OK' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='OK' role='push button' automationid='' check:text='OK' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAAKIAAAAmCAYAAABH00DVAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAANYSURBVHhe7ZotjKwwFEafXDkSO3LkSCyyEolFIiuxSCQSi0RWYpGVSCwSifzeLTvsY3Z+Hpvsbkjmu8kR29JuQk5u7y3zBwzGDoIiMnYRFJGxi6CIjF3EjYjjBAyE/BKT4OJGxLAa4GU9Ib9C1oyzdzciBuUAJTIW7YjKToT8GH4xQJsnIrrJXubvpVJCvgt3+j4VMZV0eW8hId8JRSS7gCKSXUARyS6giGQXUESyCyjiVxlGdP0Au6KT9yfD/54ZJ3nGXXtN12unCb1bP/N57rWhiF9BBLJlBOWfcPC8Ge94Qiwvse0vz4w9urZAeNLI6w7t1R49qjREGCUIC7saJxRxI30vUpUaKtTQeYmiNqjqCmWZIg5CxJn8beVdDSJikyM4JMhqexHRZcJuljDNcmSVhZE0eu//vCoUcROSCZsauYoQ5Q1qkaifx51gFrWWLKcypKWFvRFRjumuRV0k0DpFYUTo4fP+hCJuQWQzZQ51TFFJ7det51wd2NdIVYxEV6j7tYitZD6RsMyg4wiZvGhKeB+KuAUrx26ucVAljKTC92y4Rmo/HcwZLzOLiLFkyApZLoKGAeJaMqO85+t1ZIEibsGJWKQ4JEaO3nvd7gSTK6n/FhEzETGAfz7ieHrD2/EMT7cP1hIHRdzCh4jNA5kGaUTWGdGJ6OGsEiS5NCdZguAkWVFqyEbS6e16QhG3MLg6L4cfFLdHs6sRhwZZGEmNWKC0i4g+ItdJdwM6W6OIFXxpaHIRVZrr6/0JRdzGgNZUSM8xdCkNiLusnsdFwrGfr3UilULnrTQj62blcn0zDuhthcQPEKW1yLqsJwsUcSO9dL8mUzh50nyUjcjovqqIaG2B5HiESqr5l+z37xGF8f0yPAgTRLlBI4Pr/V8diriV+ZpGJKs0lH++fFk5wBMJw9yitnJkuyP3kYguew4WRRIg8EOoVBqf9f4vDkX8CrOMHUzToJq/rLzTdBcJl2dERmNEwo8jfGGSelEyayNYOa6v5l4biriB2jTQqdSAGyjK6u4e5DkUcQNOrkCpTTgZ7+1BnkMRyS6giGQXUESyCygi2QUUkeyC/4qYyKT70E/IT6LEtacivqU9DhkhP4vz7KGIrZhqOkJ+B/fDYRc3IjIYvx/AX/OFmuzTL7waAAAAAElFTkSuQmCC" InformativeScreenshot="11ccb532ef00d2f673b9677d638895aa.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Alert' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="OK" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;">
+                        <uix:TargetAnchorable.Anchors>
+                          <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                            <uix:Target DesignTimeRectangle="633, 270, 30, 30" ElementType="Button" FriendlyName="'Line down'" FullSelectorArgument="&lt;ctrl name='vertical' role='scroll bar' /&gt;&lt;ctrl name='Line down' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='vertical' role='scroll bar' /&gt;&lt;ctrl name='Line down' role='push button' automationid='' check:text='Line down' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAADxSURBVEhL7ZItD4QwDIbvvyKRSCwSicTyM7BIJBKLRE7u8jZ5Se9ScuNjdyfW5AlJ1/RpNx7OOU8YOheLJJbQuVgksYTOxSKJJXQuFv8vXpbFN03jp2kyz0loXbB4nmef57k0Hcdxt6ZtW59l2W4NOSxGU2sjnHddJ+e3i8uy3BrXdS3Xuq6rfLkpwIC3iSmoqmoTYBC+KXNFUciQqLf6kGAxwRVrETbnE2AobPpJCg6LAZprOaV935v1FqfEAHJeO658GAazbo/TYoD3hfTTj2RxScwfLuRN37kkvkISS+hcLJJYQudi8RMx4kX8PZx/AlBjZ2jIyBmlAAAAAElFTkSuQmCC" SearchSteps="Selector, FuzzySelector, Image" Text="Line down" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                          </scg:List>
+                        </uix:TargetAnchorable.Anchors>
+                        <uix:TargetAnchorable.PointOffset>
+                          <uix:PointOffset Position="TopRight" X="-61" Y="14" />
+                        </uix:TargetAnchorable.PointOffset>
+                      </uix:TargetAnchorable>
+                    </uix:NClick.Target>
+                  </uix:NClick>
+                  <uix:NClick ClickType="Single" DelayAfter="1" DisplayName="Click 'Demographic /'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_6" KeyModifiers="None" MouseButton="Left">
+                    <uix:NClick.Target>
+                      <uix:TargetAnchorable DesignTimeRectangle="28, 244, 335, 37" ElementType="Button" FriendlyName="'Demographic /'" FullSelectorArgument="&lt;ctrl name='     Demographic / Financial (A)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='     Demographic / Financial (A)' role='push button' automationid='' check:text='Demographic / Financial (A)' /&gt;" ImageBase64="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" InformativeScreenshot="66432113712155636817681aaf83bbda.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Carron Shelton - Patient Menu (MRN: 926924)' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="Demographic / Financial (A)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;">
+                        <uix:TargetAnchorable.Anchors>
+                          <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                            <uix:Target DesignTimeRectangle="28, 284, 335, 37" ElementType="Button" FriendlyName="'Orders /'" FullSelectorArgument="&lt;ctrl name='     Orders / Medical Info (B)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='     Orders / Medical Info (B)' role='push button' automationid='' check:text='Orders / Medical Info (B)' /&gt;" ImageBase64="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" SearchSteps="Selector, FuzzySelector, Image" Text="Orders / Medical Info (B)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                          </scg:List>
+                        </uix:TargetAnchorable.Anchors>
+                      </uix:TargetAnchorable>
+                    </uix:NClick.Target>
+                  </uix:NClick>
+                </Sequence>
+              </ActivityAction>
+            </uix:NApplicationCard.Body>
+            <uix:NApplicationCard.TargetApp>
+              <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="982d680e83214f683b2222532381cc18.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*'/&gt;" />
+            </uix:NApplicationCard.TargetApp>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </uix:NApplicationCard>
+          <p:CVScope ContinueOnError="{x:Null}" DelayBefore="{x:Null}" ApiKey="xzaYN9U/z7kTxnqvoTX0H5FDKHex1Rt0y8CdSLWseYAworSsK0b/uLOnDlprlc8r4HUVOeXPW9WG/ST6odoFxg==" DesignTimeCacheId="d56da5fd-cfd1-47d8-b135-ffd916da2806" DisplayName="CV Screen Scope 'cpr.exe Patient'" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CVScope_1" Server="https://cv.uipath.com" Version="V2">
+            <p:CVScope.Body>
+              <ActivityAction x:TypeArguments="x:Object">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="x:Object" Name="CVSessionData" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,230.4" sap2010:WorkflowViewState.IdRef="Sequence_9">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <p:CvClickWithDescriptor DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" Descriptor="[&quot;Target: Text 'Patient Information' (27,65,122,13) OffsetPoint: (20,-22)&quot; +&#xA;&quot;Anchor: Text 'Last Name' (26,97,62,11)&quot;]" DesignTimeCacheId="d56da5fd-cfd1-47d8-b135-ffd916da2806" DesignTimeScaleFactor="1.25" DisplayName="CV Click - Text" sap:VirtualizedContainerService.HintSize="400,137.6" sap2010:WorkflowViewState.IdRef="CvClickWithDescriptor_1" InformativeScreenshot="b9c6d4b9559b5d4bb9a857fb8b408434" KeyModifiers="None" MouseButton="BTN_LEFT" Version="V2">
+                    <p:CvClickWithDescriptor.CursorPosition>
+                      <ui:CursorPosition Position="Center">
+                        <ui:CursorPosition.OffsetX>
+                          <InArgument x:TypeArguments="x:Int32" />
+                        </ui:CursorPosition.OffsetX>
+                        <ui:CursorPosition.OffsetY>
+                          <InArgument x:TypeArguments="x:Int32" />
+                        </ui:CursorPosition.OffsetY>
+                      </ui:CursorPosition>
+                    </p:CvClickWithDescriptor.CursorPosition>
+                    <p:CvClickWithDescriptor.DesignTimeDescriptor>
+                      <uc:CvDescriptor TargetPointOffset="20, -22">
+                        <uc:CvDescriptor.Anchors>
+                          <x:Array Type="uc:CvElementDescriptor">
+                            <uc:CvElementDescriptor DesignTimeArea="26, 97, 62, 11" ElementType="Text" Text="Last Name" />
+                          </x:Array>
+                        </uc:CvDescriptor.Anchors>
+                        <uc:CvDescriptor.Target>
+                          <uc:CvElementDescriptor DesignTimeArea="27, 65, 122, 13" ElementType="Text" Text="Patient Information" />
+                        </uc:CvDescriptor.Target>
+                      </uc:CvDescriptor>
+                    </p:CvClickWithDescriptor.DesignTimeDescriptor>
+                    <p:CvClickWithDescriptor.Target>
+                      <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="8da13d85-c19a-4771-a238-5d366997915d">
+                        <ui:Target.TimeoutMS>
+                          <InArgument x:TypeArguments="x:Int32" />
+                        </ui:Target.TimeoutMS>
+                        <ui:Target.WaitForReady>
+                          <InArgument x:TypeArguments="ui:WaitForReady" />
+                        </ui:Target.WaitForReady>
+                      </ui:Target>
+                    </p:CvClickWithDescriptor.Target>
+                  </p:CvClickWithDescriptor>
+                </Sequence>
+              </ActivityAction>
+            </p:CVScope.Body>
+            <p:CVScope.DesignTimeCache>
+              <uc:CVCache CvUiElements="{x:Null}" OcrTexts="{x:Null}" />
+            </p:CVScope.DesignTimeCache>
+            <p:CVScope.DesignTimeCacheContainer>
+              <uc:CvCacheContainer>
+                <uc:CvCacheContainer.Caches>
+                  <scg:List x:TypeArguments="uc:CVCache" Capacity="1">
+                    <uc:CVCache DisplayName="Main Screen" Id="d56da5fd-cfd1-47d8-b135-ffd916da2806" InformativeScreenshot="f11d389f9107648effaf22426dae94c6" LogicalPosition="434, 196" OcrText="Patient Information For Zachary Gatliff - MRN 598564 _ X Demo Insurance M.D. / Prov Med. Info Dx / Med Hx Orders Shipping Status Log User Defined Equipment Patient Information Miscellaneous Last Name Gatliff Patient Status Active Team IVIG-I v First Name Zachary Site Cincinnati Company Cincinnati Address 414 John E Sullivan Rd Start of Care 09/06/2016 Service Area Peach ZIP 31008 Rural City / State Byron GA Primary RN Self Infuse Ins. Coord. Kyla Cooper County Peach Biller Collector Home Phone 478-731-4248 Sales Rep Corey Stafford Category SCIG Cell Phone 478-731-4248 * Site of Service Home Code Status Work Phone Marital Status Single v Language English Email gatliff4@gmail.com Driver's Lic # Tax Gender Male v Advance Directives Allow Web Access? DOB / Age 12/30/1994 28 yrs SSN Contacts (F3) Primary Emergency Primary &amp; Emergency Referral Date 08/17/2016 Name Home Work Cell Relation ^ Ref. Source Infectious Disease Consultants Debbie Gatliff 478-731-4248 478-731-4248 Mother Alex/Tabitha Byron PD 478-956-2880 Local Emerg v Help (F1) Print (F7) Save &amp; Close (F2) Elig." Position="434, 196" ScaleFactor="1.25" ScreenshotGuid="9da87c6a-41c1-40f9-a146-c8632443bc8e" ServerVersion="1">
+                      <uc:CVCache.CvTables>
+                        <x:Array Type="uc:CvTableInfo">
+                          <uc:CvTableInfo>
+                            <uc:CvTableInfo.Columns>
+                              <x:Array Type="x:Int32">
+                                <x:Int32>335</x:Int32>
+                                <x:Int32>437</x:Int32>
+                                <x:Int32>520</x:Int32>
+                                <x:Int32>603</x:Int32>
+                                <x:Int32>685</x:Int32>
+                                <x:Int32>760</x:Int32>
+                                <x:Int32>812</x:Int32>
+                              </x:Array>
+                            </uc:CvTableInfo.Columns>
+                            <uc:CvTableInfo.Rows>
+                              <x:Array Type="x:Int32">
+                                <x:Int32>409</x:Int32>
+                                <x:Int32>428</x:Int32>
+                                <x:Int32>446</x:Int32>
+                                <x:Int32>464</x:Int32>
+                                <x:Int32>484</x:Int32>
+                              </x:Array>
+                            </uc:CvTableInfo.Rows>
+                          </uc:CvTableInfo>
+                        </x:Array>
+                      </uc:CVCache.CvTables>
+                      <uc:CVCache.CvUiElements>
+                        <scg:List x:TypeArguments="uc:CvElementInfo" Capacity="256">
+                          <uc:CvElementInfo Category="Button" Region="641, 30, 102, 27" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 308, 189, 23" />
+                          <uc:CvElementInfo Category="Button" Region="408, 30, 67, 27" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 152, 72, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="117, 404, 90, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 356, 90, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 307, 102, 24" />
+                          <uc:CvElementInfo Category="Button" Region="5, 31, 59, 23" />
+                          <uc:CvElementInfo Category="Button" Region="475, 30, 78, 27" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 284, 89, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 380, 88, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 164, 89, 23" />
+                          <uc:CvElementInfo Category="CheckBox" Region="434, 351, 15, 14" />
+                          <uc:CvElementInfo Category="Button" Region="235, 31, 77, 26" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 188, 141, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 92, 72, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="671, 128, 135, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 92, 140, 22" />
+                          <uc:CvElementInfo Category="InputBox" Region="535, 307, 32, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 211, 132, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 236, 90, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 452, 189, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 140, 188, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="671, 259, 96, 23" />
+                          <uc:CvElementInfo Category="Button" Region="553, 30, 87, 26" />
+                          <uc:CvElementInfo Category="InputBox" Region="670, 307, 95, 24" />
+                          <uc:CvElementInfo Category="Button" Region="744, 30, 93, 28" />
+                          <uc:CvElementInfo Category="Icon" Region="2, 4, 18, 18" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 260, 90, 24" />
+                          <uc:CvElementInfo Category="Button" Region="67, 30, 82, 27" />
+                          <uc:CvElementInfo Category="CheckBox" Region="670, 351, 15, 14" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 212, 141, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 128, 132, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="671, 152, 72, 23" />
+                          <uc:CvElementInfo Category="Button" Region="312, 31, 96, 27" />
+                          <uc:CvElementInfo Category="InputBox" Region="670, 235, 136, 24" />
+                          <uc:CvElementInfo Category="InputBox" Region="671, 187, 134, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="670, 211, 136, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="435, 187, 132, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="119, 116, 141, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 235, 133, 24" />
+                          <uc:CvElementInfo Category="Button" Region="191, 505, 148, 27" />
+                          <uc:CvElementInfo Category="CheckBox" Region="533, 388, 13, 13" />
+                          <uc:CvElementInfo Category="CheckBox" Region="212, 168, 15, 15" />
+                          <uc:CvElementInfo Category="InputBox" Region="670, 283, 103, 23" />
+                          <uc:CvElementInfo Category="Button" Region="148, 30, 86, 28" />
+                          <uc:CvElementInfo Category="MaximizeButton" Region="763, 4, 16, 17" />
+                          <uc:CvElementInfo Category="Button" Region="340, 504, 148, 27" />
+                          <uc:CvElementInfo Category="Button" Region="488, 505, 149, 26" />
+                          <uc:CvElementInfo Category="MinimizeButton" Region="718, 4, 17, 16" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="812, 412, 19, 18" />
+                          <uc:CvElementInfo Category="Icon" Region="707, 505, 28, 29" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 259, 72, 24" />
+                          <uc:CvElementInfo Category="Icon" Region="742, 504, 30, 30" />
+                          <uc:CvElementInfo Category="Icon" Region="664, 500, 32, 32" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="812, 467, 19, 18" />
+                          <uc:CvElementInfo Category="Icon" Region="777, 504, 28, 29" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 428, 189, 24" />
+                          <uc:CvElementInfo Category="CloseButton" Region="808, 4, 17, 17" />
+                          <uc:CvElementInfo Category="InputBox" Region="208, 356, 51, 23" />
+                          <uc:CvElementInfo Category="Icon" Region="568, 305, 16, 14" />
+                          <uc:CvElementInfo Category="Icon" Region="568, 127, 15, 13" />
+                          <uc:CvElementInfo Category="InputBox" Region="276, 188, 31, 23" />
+                          <uc:CvElementInfo Category="Icon" Region="568, 209, 15, 14" />
+                          <uc:CvElementInfo Category="Icon" Region="260, 212, 13, 12" />
+                          <uc:CvElementInfo Category="Icon" Region="507, 258, 14, 12" />
+                          <uc:CvElementInfo Category="Icon" Region="568, 234, 15, 13" />
+                          <uc:CvElementInfo Category="Icon" Region="507, 90, 15, 13" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="208, 401, 16, 16" />
+                          <uc:CvElementInfo Category="Icon" Region="507, 152, 15, 13" />
+                          <uc:CvElementInfo Category="Icon" Region="568, 185, 15, 13" />
+                          <uc:CvElementInfo Category="Icon" Region="260, 186, 14, 14" />
+                          <uc:CvElementInfo Category="Icon" Region="743, 151, 14, 12" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="764, 257, 16, 16" />
+                          <uc:CvElementInfo Category="Icon" Region="766, 306, 14, 12" />
+                          <uc:CvElementInfo Category="Icon" Region="806, 210, 13, 12" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="765, 280, 16, 15" />
+                          <uc:CvElementInfo Category="Icon" Region="208, 402, 16, 14" />
+                          <uc:CvElementInfo Category="Icon" Region="308, 426, 16, 14" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="308, 187, 16, 14" />
+                          <uc:CvElementInfo Category="Cell" Region="335, 409, 102, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="520, 409, 82, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="437, 409, 83, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="685, 409, 75, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="603, 409, 82, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="685, 446, 75, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="437, 428, 83, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="520, 428, 82, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="437, 446, 83, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="685, 464, 75, 20" />
+                          <uc:CvElementInfo Category="Cell" Region="603, 428, 82, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="335, 428, 102, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="520, 464, 82, 20" />
+                          <uc:CvElementInfo Category="Cell" Region="760, 428, 51, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="520, 446, 82, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="437, 464, 83, 20" />
+                          <uc:CvElementInfo Category="Cell" Region="760, 446, 51, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="335, 446, 102, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="603, 464, 82, 20" />
+                          <uc:CvElementInfo Category="Cell" Region="685, 428, 75, 17" />
+                          <uc:CvElementInfo Category="Cell" Region="760, 409, 51, 19" />
+                          <uc:CvElementInfo Category="Cell" Region="603, 446, 82, 18" />
+                          <uc:CvElementInfo Category="Cell" Region="760, 464, 51, 20" />
+                          <uc:CvElementInfo Category="Cell" Region="335, 464, 102, 20" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="686, 387, 14, 15" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="766, 281, 14, 12" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="807, 234, 13, 12" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="308, 426, 16, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="805, 185, 15, 13" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="806, 128, 13, 12" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="260, 186, 15, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="806, 234, 14, 12" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="308, 187, 15, 12" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="600, 387, 14, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="506, 152, 15, 14" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="806, 187, 13, 11" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="764, 257, 16, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="742, 150, 16, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="568, 233, 16, 15" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="327, 37, 16, 16" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="567, 184, 16, 16" />
+                          <uc:CvElementInfo Category="CheckBox" Confidence="Runtime" Region="686, 388, 15, 14" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="765, 305, 16, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="568, 209, 16, 14" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="276, 188, 31, 24" />
+                          <uc:CvElementInfo Category="CheckBox" Confidence="Runtime" Region="601, 388, 14, 14" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="806, 127, 14, 13" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="507, 258, 15, 13" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="260, 211, 15, 13" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="347, 64, 98, 16" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="507, 90, 15, 14" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="568, 126, 15, 15" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="806, 210, 15, 13" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="209, 264, 12, 12" />
+                          <uc:CvElementInfo Category="ArrowButton" Confidence="Runtime" Region="568, 305, 16, 15" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="742, 504, 29, 29" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="118, 428, 189, 24" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="612, 387, 70, 16" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="208, 356, 52, 23" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="24, 62, 132, 18" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="601, 388, 14, 15" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="778, 506, 25, 28" />
+                          <uc:CvElementInfo Category="Icon" Confidence="Runtime" Region="276, 188, 31, 23" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="435, 259, 72, 24" />
+                          <uc:CvElementInfo Category="Button" Confidence="Runtime" Region="686, 388, 14, 14" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="762, 375, 53, 36" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="685, 520, 24, 10" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="310, 207, 20, 30" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="340, 529, 144, 15" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="338, 504, 146, 25" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="116, 258, 91, 23" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="13, 355, 102, 23" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="190, 504, 148, 26" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="815, 172, 13, 14" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="22, 259, 95, 23" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="672, 208, 136, 23" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="438, 483, 80, 8" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="586, 232, 82, 26" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="314, 209, 15, 16" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="336, 209, 97, 24" />
+                          <uc:CvElementInfo Category="Cell" Confidence="Runtime" Region="519, 483, 85, 8" />
+                          <uc:CvElementInfo Category="InputBox" Region="672, 92, 134, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="434, 283, 88, 23" />
+                          <uc:CvElementInfo Category="InputBox" Region="118, 332, 89, 23" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="503, 284, 19, 20" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="187, 333, 19, 20" />
+                          <uc:CvElementInfo Category="ArrowButton" Region="786, 93, 20, 20" />
+                        </scg:List>
+                      </uc:CVCache.CvUiElements>
+                      <uc:CVCache.OcrTexts>
+                        <scg:List x:TypeArguments="uc:OcrTextInfo" Capacity="256">
+                          <uc:OcrTextInfo Region="23, 7, 37, 11" Text="Patient" />
+                          <uc:OcrTextInfo Region="62, 7, 63, 11" Text="Information" />
+                          <uc:OcrTextInfo Region="128, 7, 19, 11" Text="For" />
+                          <uc:OcrTextInfo Region="148, 7, 43, 13" Text="Zachary" />
+                          <uc:OcrTextInfo Region="192, 7, 34, 11" Text="Gatliff" />
+                          <uc:OcrTextInfo Region="228, 7, 5, 12" Text="-" />
+                          <uc:OcrTextInfo Region="236, 7, 27, 11" Text="MRN" />
+                          <uc:OcrTextInfo Region="266, 7, 40, 11" Text="598564" />
+                          <uc:OcrTextInfo Region="720, 3, 12, 11" Text="_" />
+                          <uc:OcrTextInfo Region="811, 6, 12, 12" Text="X" />
+                          <uc:OcrTextInfo Region="16, 36, 35, 12" Text="Demo" />
+                          <uc:OcrTextInfo Region="80, 38, 56, 12" Text="Insurance" />
+                          <uc:OcrTextInfo Region="163, 38, 25, 12" Text="M.D." />
+                          <uc:OcrTextInfo Region="189, 38, 6, 11" Text="/" />
+                          <uc:OcrTextInfo Region="196, 39, 25, 12" Text="Prov" />
+                          <uc:OcrTextInfo Region="249, 38, 27, 12" Text="Med." />
+                          <uc:OcrTextInfo Region="278, 38, 21, 12" Text="Info" />
+                          <uc:OcrTextInfo Region="328, 38, 15, 12" Text="Dx" />
+                          <uc:OcrTextInfo Region="347, 39, 5, 11" Text="/" />
+                          <uc:OcrTextInfo Region="353, 38, 24, 12" Text="Med" />
+                          <uc:OcrTextInfo Region="380, 39, 16, 11" Text="Hx" />
+                          <uc:OcrTextInfo Region="422, 38, 39, 12" Text="Orders" />
+                          <uc:OcrTextInfo Region="489, 38, 50, 13" Text="Shipping" />
+                          <uc:OcrTextInfo Region="567, 38, 36, 12" Text="Status" />
+                          <uc:OcrTextInfo Region="605, 38, 22, 14" Text="Log" />
+                          <uc:OcrTextInfo Region="656, 38, 28, 12" Text="User" />
+                          <uc:OcrTextInfo Region="685, 38, 44, 11" Text="Defined" />
+                          <uc:OcrTextInfo Region="760, 38, 63, 13" Text="Equipment" />
+                          <uc:OcrTextInfo Region="27, 65, 46, 12" Text="Patient" />
+                          <uc:OcrTextInfo Region="76, 66, 73, 12" Text="Information" />
+                          <uc:OcrTextInfo Region="350, 65, 91, 12" Text="Miscellaneous" />
+                          <uc:OcrTextInfo Region="26, 97, 26, 11" Text="Last" />
+                          <uc:OcrTextInfo Region="53, 97, 35, 11" Text="Name" />
+                          <uc:OcrTextInfo Region="124, 98, 33, 12" Text="Gatliff" />
+                          <uc:OcrTextInfo Region="351, 97, 40, 11" Text="Patient" />
+                          <uc:OcrTextInfo Region="392, 97, 35, 11" Text="Status" />
+                          <uc:OcrTextInfo Region="439, 98, 32, 12" Text="Active" />
+                          <uc:OcrTextInfo Region="597, 97, 32, 11" Text="Team" />
+                          <uc:OcrTextInfo Region="676, 98, 30, 12" Text="IVIG-I" />
+                          <uc:OcrTextInfo Region="789, 100, 11, 8" Text="v" />
+                          <uc:OcrTextInfo Region="26, 121, 26, 11" Text="First" />
+                          <uc:OcrTextInfo Region="53, 121, 35, 11" Text="Name" />
+                          <uc:OcrTextInfo Region="123, 122, 45, 14" Text="Zachary" />
+                          <uc:OcrTextInfo Region="351, 133, 21, 12" Text="Site" />
+                          <uc:OcrTextInfo Region="440, 134, 56, 12" Text="Cincinnati" />
+                          <uc:OcrTextInfo Region="596, 133, 54, 13" Text="Company" />
+                          <uc:OcrTextInfo Region="676, 134, 56, 12" Text="Cincinnati" />
+                          <uc:OcrTextInfo Region="26, 146, 47, 10" Text="Address" />
+                          <uc:OcrTextInfo Region="123, 146, 23, 12" Text="414" />
+                          <uc:OcrTextInfo Region="147, 147, 28, 11" Text="John" />
+                          <uc:OcrTextInfo Region="177, 146, 9, 12" Text="E" />
+                          <uc:OcrTextInfo Region="188, 146, 44, 12" Text="Sullivan" />
+                          <uc:OcrTextInfo Region="234, 146, 17, 12" Text="Rd" />
+                          <uc:OcrTextInfo Region="350, 157, 27, 12" Text="Start" />
+                          <uc:OcrTextInfo Region="379, 157, 12, 11" Text="of" />
+                          <uc:OcrTextInfo Region="392, 157, 28, 12" Text="Care" />
+                          <uc:OcrTextInfo Region="440, 158, 63, 12" Text="09/06/2016" />
+                          <uc:OcrTextInfo Region="596, 157, 40, 11" Text="Service" />
+                          <uc:OcrTextInfo Region="638, 157, 26, 11" Text="Area" />
+                          <uc:OcrTextInfo Region="676, 158, 36, 12" Text="Peach" />
+                          <uc:OcrTextInfo Region="26, 169, 20, 12" Text="ZIP" />
+                          <uc:OcrTextInfo Region="123, 170, 36, 12" Text="31008" />
+                          <uc:OcrTextInfo Region="228, 169, 31, 12" Text="Rural" />
+                          <uc:OcrTextInfo Region="26, 193, 22, 13" Text="City" />
+                          <uc:OcrTextInfo Region="49, 193, 5, 11" Text="/" />
+                          <uc:OcrTextInfo Region="56, 193, 28, 11" Text="State" />
+                          <uc:OcrTextInfo Region="124, 194, 32, 14" Text="Byron" />
+                          <uc:OcrTextInfo Region="281, 194, 18, 12" Text="GA" />
+                          <uc:OcrTextInfo Region="351, 192, 43, 13" Text="Primary" />
+                          <uc:OcrTextInfo Region="396, 192, 19, 11" Text="RN" />
+                          <uc:OcrTextInfo Region="440, 193, 23, 12" Text="Self" />
+                          <uc:OcrTextInfo Region="464, 193, 35, 12" Text="Infuse" />
+                          <uc:OcrTextInfo Region="596, 192, 20, 11" Text="Ins." />
+                          <uc:OcrTextInfo Region="620, 192, 37, 11" Text="Coord." />
+                          <uc:OcrTextInfo Region="676, 193, 24, 13" Text="Kyla" />
+                          <uc:OcrTextInfo Region="701, 193, 43, 13" Text="Cooper" />
+                          <uc:OcrTextInfo Region="26, 217, 40, 13" Text="County" />
+                          <uc:OcrTextInfo Region="124, 218, 36, 12" Text="Peach" />
+                          <uc:OcrTextInfo Region="351, 216, 29, 11" Text="Biller" />
+                          <uc:OcrTextInfo Region="596, 216, 51, 11" Text="Collector" />
+                          <uc:OcrTextInfo Region="26, 241, 35, 11" Text="Home" />
+                          <uc:OcrTextInfo Region="64, 241, 36, 11" Text="Phone" />
+                          <uc:OcrTextInfo Region="123, 242, 80, 12" Text="478-731-4248" />
+                          <uc:OcrTextInfo Region="351, 240, 32, 11" Text="Sales" />
+                          <uc:OcrTextInfo Region="385, 240, 24, 12" Text="Rep" />
+                          <uc:OcrTextInfo Region="440, 241, 33, 13" Text="Corey" />
+                          <uc:OcrTextInfo Region="474, 241, 44, 11" Text="Stafford" />
+                          <uc:OcrTextInfo Region="596, 240, 50, 13" Text="Category" />
+                          <uc:OcrTextInfo Region="676, 241, 30, 12" Text="SCIG" />
+                          <uc:OcrTextInfo Region="27, 265, 23, 12" Text="Cell" />
+                          <uc:OcrTextInfo Region="52, 265, 36, 11" Text="Phone" />
+                          <uc:OcrTextInfo Region="123, 266, 80, 12" Text="478-731-4248" />
+                          <uc:OcrTextInfo Region="211, 266, 8, 8" Text="*" />
+                          <uc:OcrTextInfo Region="351, 264, 21, 11" Text="Site" />
+                          <uc:OcrTextInfo Region="375, 264, 12, 11" Text="of" />
+                          <uc:OcrTextInfo Region="388, 264, 40, 11" Text="Service" />
+                          <uc:OcrTextInfo Region="440, 265, 35, 12" Text="Home" />
+                          <uc:OcrTextInfo Region="596, 264, 31, 11" Text="Code" />
+                          <uc:OcrTextInfo Region="629, 264, 36, 11" Text="Status" />
+                          <uc:OcrTextInfo Region="26, 289, 30, 11" Text="Work" />
+                          <uc:OcrTextInfo Region="57, 289, 36, 11" Text="Phone" />
+                          <uc:OcrTextInfo Region="351, 288, 36, 11" Text="Marital" />
+                          <uc:OcrTextInfo Region="389, 288, 36, 11" Text="Status" />
+                          <uc:OcrTextInfo Region="439, 289, 36, 13" Text="Single" />
+                          <uc:OcrTextInfo Region="507, 292, 10, 7" Text="v" />
+                          <uc:OcrTextInfo Region="596, 288, 56, 13" Text="Language" />
+                          <uc:OcrTextInfo Region="675, 289, 44, 13" Text="English" />
+                          <uc:OcrTextInfo Region="27, 313, 32, 12" Text="Email" />
+                          <uc:OcrTextInfo Region="123, 314, 107, 14" Text="gatliff4@gmail.com" />
+                          <uc:OcrTextInfo Region="351, 312, 41, 11" Text="Driver's" />
+                          <uc:OcrTextInfo Region="394, 312, 18, 11" Text="Lic" />
+                          <uc:OcrTextInfo Region="413, 312, 8, 11" Text="#" />
+                          <uc:OcrTextInfo Region="596, 312, 20, 11" Text="Tax" />
+                          <uc:OcrTextInfo Region="27, 337, 42, 11" Text="Gender" />
+                          <uc:OcrTextInfo Region="124, 338, 26, 12" Text="Male" />
+                          <uc:OcrTextInfo Region="190, 340, 12, 8" Text="v" />
+                          <uc:OcrTextInfo Region="450, 352, 47, 11" Text="Advance" />
+                          <uc:OcrTextInfo Region="500, 352, 54, 11" Text="Directives" />
+                          <uc:OcrTextInfo Region="686, 352, 31, 11" Text="Allow" />
+                          <uc:OcrTextInfo Region="718, 352, 26, 11" Text="Web" />
+                          <uc:OcrTextInfo Region="745, 352, 48, 11" Text="Access?" />
+                          <uc:OcrTextInfo Region="27, 361, 26, 12" Text="DOB" />
+                          <uc:OcrTextInfo Region="55, 361, 5, 11" Text="/" />
+                          <uc:OcrTextInfo Region="60, 361, 23, 13" Text="Age" />
+                          <uc:OcrTextInfo Region="124, 362, 62, 12" Text="12/30/1994" />
+                          <uc:OcrTextInfo Region="212, 362, 16, 12" Text="28" />
+                          <uc:OcrTextInfo Region="228, 364, 17, 11" Text="yrs" />
+                          <uc:OcrTextInfo Region="26, 385, 26, 12" Text="SSN" />
+                          <uc:OcrTextInfo Region="340, 388, 55, 12" Text="Contacts" />
+                          <uc:OcrTextInfo Region="397, 388, 24, 15" Text="(F3)" />
+                          <uc:OcrTextInfo Region="548, 388, 46, 13" Text="Primary" />
+                          <uc:OcrTextInfo Region="616, 388, 65, 13" Text="Emergency" />
+                          <uc:OcrTextInfo Region="702, 388, 45, 13" Text="Primary" />
+                          <uc:OcrTextInfo Region="749, 388, 10, 11" Text="&amp;" />
+                          <uc:OcrTextInfo Region="761, 388, 65, 13" Text="Emergency" />
+                          <uc:OcrTextInfo Region="26, 409, 45, 12" Text="Referral" />
+                          <uc:OcrTextInfo Region="73, 409, 27, 11" Text="Date" />
+                          <uc:OcrTextInfo Region="124, 410, 63, 12" Text="08/17/2016" />
+                          <uc:OcrTextInfo Region="372, 414, 33, 12" Text="Name" />
+                          <uc:OcrTextInfo Region="464, 414, 34, 12" Text="Home" />
+                          <uc:OcrTextInfo Region="547, 414, 32, 12" Text="Work" />
+                          <uc:OcrTextInfo Region="636, 414, 22, 12" Text="Cell" />
+                          <uc:OcrTextInfo Region="701, 414, 47, 12" Text="Relation" />
+                          <uc:OcrTextInfo Region="816, 416, 9, 8" Text="^" />
+                          <uc:OcrTextInfo Region="26, 433, 23, 12" Text="Ref." />
+                          <uc:OcrTextInfo Region="52, 433, 40, 11" Text="Source" />
+                          <uc:OcrTextInfo Region="124, 434, 53, 12" Text="Infectious" />
+                          <uc:OcrTextInfo Region="180, 434, 48, 12" Text="Disease" />
+                          <uc:OcrTextInfo Region="229, 434, 68, 12" Text="Consultants" />
+                          <uc:OcrTextInfo Region="340, 433, 40, 12" Text="Debbie" />
+                          <uc:OcrTextInfo Region="383, 433, 33, 11" Text="Gatliff" />
+                          <uc:OcrTextInfo Region="440, 433, 79, 12" Text="478-731-4248" />
+                          <uc:OcrTextInfo Region="606, 433, 79, 11" Text="478-731-4248" />
+                          <uc:OcrTextInfo Region="689, 433, 39, 12" Text="Mother" />
+                          <uc:OcrTextInfo Region="123, 458, 68, 12" Text="Alex/Tabitha" />
+                          <uc:OcrTextInfo Region="340, 452, 32, 13" Text="Byron" />
+                          <uc:OcrTextInfo Region="373, 451, 18, 12" Text="PD" />
+                          <uc:OcrTextInfo Region="440, 451, 79, 12" Text="478-956-2880" />
+                          <uc:OcrTextInfo Region="690, 452, 30, 11" Text="Local" />
+                          <uc:OcrTextInfo Region="723, 452, 39, 12" Text="Emerg" />
+                          <uc:OcrTextInfo Region="816, 471, 9, 8" Text="v" />
+                          <uc:OcrTextInfo Region="238, 512, 27, 13" Text="Help" />
+                          <uc:OcrTextInfo Region="268, 512, 23, 13" Text="(F1)" />
+                          <uc:OcrTextInfo Region="388, 512, 26, 12" Text="Print" />
+                          <uc:OcrTextInfo Region="416, 512, 23, 13" Text="(F7)" />
+                          <uc:OcrTextInfo Region="512, 512, 28, 12" Text="Save" />
+                          <uc:OcrTextInfo Region="543, 512, 8, 11" Text="&amp;" />
+                          <uc:OcrTextInfo Region="553, 512, 33, 11" Text="Close" />
+                          <uc:OcrTextInfo Region="589, 512, 24, 13" Text="(F2)" />
+                          <uc:OcrTextInfo Region="665, 500, 24, 15" Text="Elig." />
+                        </scg:List>
+                      </uc:CVCache.OcrTexts>
+                    </uc:CVCache>
+                  </scg:List>
+                </uc:CvCacheContainer.Caches>
+              </uc:CvCacheContainer>
+            </p:CVScope.DesignTimeCacheContainer>
+            <p:CVScope.OCREngine>
+              <ActivityFunc x:TypeArguments="sd:Image, scg:IEnumerable(scg:KeyValuePair(sd:Rectangle, x:String))">
+                <ActivityFunc.Argument>
+                  <DelegateInArgument x:TypeArguments="sd:Image" Name="Image" />
+                </ActivityFunc.Argument>
+                <p1:UiPathScreenOCR Endpoint="{x:Null}" Output="{x:Null}" Text="{x:Null}" ApiKey="xzaYN9U/z7kTxnqvoTX0H5FDKHex1Rt0y8CdSLWseYAworSsK0b/uLOnDlprlc8r4HUVOeXPW9WG/ST6odoFxg==" ComputeSkewAngle="False" ExtractWords="True" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="UiPathScreenOCR_1" Image="[Image]" Language="en" Profile="Screen" Scale="1" />
+              </ActivityFunc>
+            </p:CVScope.OCREngine>
+            <p:CVScope.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="4504971b-8527-4139-8ca0-8052e282320f" InformativeScreenshot="0df3551e3e045b0daf3045641a87538d" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;" WaitForReady="INTERACTIVE">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+              </ui:Target>
+            </p:CVScope.Target>
+            <p:CVScope.UseLocalServer>
+              <InArgument x:TypeArguments="x:Boolean" />
+            </p:CVScope.UseLocalServer>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </p:CVScope>
+          <Sequence DisplayName="Data Scraping" sap:VirtualizedContainerService.HintSize="433.6,68.8" sap2010:WorkflowViewState.IdRef="Sequence_12">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:WindowScope ApplicationWindow="{x:Null}" SearchScope="{x:Null}" TimeoutMS="{x:Null}" Window="{x:Null}" DisplayName="Attach Window 'PatientIn Cpr9c'" sap:VirtualizedContainerService.HintSize="434,344" sap2010:WorkflowViewState.IdRef="WindowScope_1" InformativeScreenshot="a01b4e1043343e07f8f46e0cfb7575e0" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;">
+              <ui:WindowScope.Body>
+                <ActivityAction x:TypeArguments="x:Object">
+                  <ActivityAction.Argument>
+                    <DelegateInArgument x:TypeArguments="x:Object" Name="ContextTarget" />
+                  </ActivityAction.Argument>
+                  <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="376,198" sap2010:WorkflowViewState.IdRef="Sequence_11">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:ExtractData DelayBetweenPagesMS="{x:Null}" NextLinkSelector="{x:Null}" ContinueOnError="True" DataTable="[ExtractDataTable]" DisplayName="Extract Structured Data 'table  View 1'" ExtractMetadata="&lt;extract-table get_columns_name='1' get_empty_columns='1' columns_name_source='Longest' /&gt;" sap:VirtualizedContainerService.HintSize="334,106" sap2010:WorkflowViewState.IdRef="ExtractData_1" MaxNumberOfResults="100" SimulateClick="True">
+                      <ui:ExtractData.Target>
+                        <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="7e25a9f6-5de1-420d-8489-e33c0d2ceda3" InformativeScreenshot="5ef30e75ffe946db6d86201be1d62786" Selector="&lt;ctrl name='PGFBASE1' role='page tab list' /&gt;&lt;ctrl name='Insurance' role='page tab' /&gt;&lt;ctrl name='Patinsgrid1' role='grouping' /&gt;&lt;ctrl name='Dhsgrid1' role='table' /&gt;&lt;ctrl name='View 1' role='table' /&gt;">
+                          <ui:Target.TimeoutMS>
+                            <InArgument x:TypeArguments="x:Int32" />
+                          </ui:Target.TimeoutMS>
+                          <ui:Target.WaitForReady>
+                            <InArgument x:TypeArguments="ui:WaitForReady" />
+                          </ui:Target.WaitForReady>
+                        </ui:Target>
+                      </ui:ExtractData.Target>
+                    </ui:ExtractData>
+                  </Sequence>
+                </ActivityAction>
+              </ui:WindowScope.Body>
+            </ui:WindowScope>
+          </Sequence>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_7">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="375.2,161.6" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:TakeScreenshot WaitBefore="{x:Null}" DisplayName="Take Screenshot" sap:VirtualizedContainerService.HintSize="333.6,68.8" sap2010:WorkflowViewState.IdRef="TakeScreenshot_3" Screenshot="[ScreenShot1]">
+                  <ui:TakeScreenshot.Target>
+                    <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Selector="{x:Null}" Id="e0439dc4-02f0-4abe-8c86-d37a5ff2cd4e" WaitForReady="INTERACTIVE">
+                      <ui:Target.TimeoutMS>
+                        <InArgument x:TypeArguments="x:Int32" />
+                      </ui:Target.TimeoutMS>
+                    </ui:Target>
+                  </ui:TakeScreenshot.Target>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:TakeScreenshot>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_8">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="524.8,302.4" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <If Condition="[String.IsNullOrEmpty(io_FilePath1)]" DisplayName="If no screenshot filepath" sap:VirtualizedContainerService.HintSize="483.2,209.6" sap2010:WorkflowViewState.IdRef="If_7">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If.Then>
+                    <Assign DisplayName="Initialize screenshot filepath" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                      <Assign.To>
+                        <OutArgument x:TypeArguments="x:String">[io_FilePath1]</OutArgument>
+                      </Assign.To>
+                      <Assign.Value>
+                        <InArgument x:TypeArguments="x:String">[Path.Combine(in_Folder1, "ExceptionScreenshot_"+Now.ToString("yyMMdd.hhmmss")+".png")]</InArgument>
+                      </Assign.Value>
+                    </Assign>
+                  </If.Then>
+                </If>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_9">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="304,152.8" sap2010:WorkflowViewState.IdRef="Sequence_24">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <Assign DisplayName="Initialize ScreenshotFileInfo" sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+                  <Assign.To>
+                    <OutArgument x:TypeArguments="si:FileInfo">[ScreenshotFileInfo1]</OutArgument>
+                  </Assign.To>
+                  <Assign.Value>
+                    <InArgument x:TypeArguments="si:FileInfo">[New FileInfo(io_FilePath1)]</InArgument>
+                  </Assign.Value>
+                </Assign>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_10">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="524.8,145.6" sap2010:WorkflowViewState.IdRef="Sequence_25">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <If Condition="[Not Directory.Exists(ScreenshotFileInfo1.DirectoryName)]" DisplayName="If screenshot folder does not exist, create it" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="If_8">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If.Then>
+                    <ui:CreateDirectory ContinueOnError="{x:Null}" DisplayName="Create directory" sap:VirtualizedContainerService.HintSize="333.6,85.6" sap2010:WorkflowViewState.IdRef="CreateDirectory_3" Path="[ScreenshotFileInfo1.DirectoryName]" />
+                  </If.Then>
+                </If>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_11">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="375.2,145.6" sap2010:WorkflowViewState.IdRef="Sequence_26">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <ui:SaveImage DisplayName="Save Image" FileName="[io_FilePath1]" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="SaveImage_3" Image="[ScreenShot1]">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:SaveImage>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <Assign sap:VirtualizedContainerService.HintSize="433.6,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+            <Assign.To>
+              <OutArgument x:TypeArguments="x:String">[PBM_PayorType]</OutArgument>
+            </Assign.To>
+            <Assign.Value>
+              <InArgument x:TypeArguments="x:String">[ExtractDataTable.Rows(0).Item(1).ToString]</InArgument>
+            </Assign.Value>
+          </Assign>
+          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBetweenKeys="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" Activate="True" DelayBefore="1" DelayMS="1" DisplayName="Send Hotkey 'cpr.exe Patient'" sap:VirtualizedContainerService.HintSize="433.6,156" sap2010:WorkflowViewState.IdRef="SendHotkey_2" Key="f2" KeyModifiers="None" SpecialKey="True">
+            <ui:SendHotkey.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="9c96a2d4-d056-49c2-a90c-baea5fabedea" InformativeScreenshot="abd3685b8dcdcf62da2b507bba0b21d0" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Patient Information For *' /&gt;">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+                <ui:Target.WaitForReady>
+                  <InArgument x:TypeArguments="ui:WaitForReady" />
+                </ui:Target.WaitForReady>
+              </ui:Target>
+            </ui:SendHotkey.Target>
+          </ui:SendHotkey>
+          <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="433.6,52.8" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+            <ui:CommentOut.Body>
+              <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="475.2,145.6" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+                <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" DisplayName="Use Remote Desktop: Patient Information For Carron Shelton - MRN 926924" sap:VirtualizedContainerService.HintSize="337.6,52.8" sap2010:WorkflowViewState.IdRef="NApplicationCard_5" OpenMode="Never" Version="V1">
+                  <uix:NApplicationCard.Body>
+                    <ActivityAction x:TypeArguments="x:Object">
+                      <ActivityAction.Argument>
+                        <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+                      </ActivityAction.Argument>
+                      <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,261.6" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <uix:NClick ClickType="Single" DelayAfter="2" DelayBefore="2" DisplayName="Click 'Save &amp; Close (F2)'" sap:VirtualizedContainerService.HintSize="333.6,167.2" sap2010:WorkflowViewState.IdRef="NClick_7" KeyModifiers="None" MouseButton="Left">
+                          <uix:NClick.Target>
+                            <uix:TargetAnchorable DesignTimeRectangle="611, 631, 187, 34" ElementType="Button" FriendlyName="'Save &amp; Close (F2)'" FullSelectorArgument="&lt;ctrl name='Save &amp;amp; Close (F2)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='Save &amp;amp; Close (F2)' role='push button' automationid='' check:text='Save &amp;amp; Close (F2)' /&gt;" ImageBase64="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" InformativeScreenshot="c8566847aa5008d1a66462e8a0f7bdb1.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Patient Information For Carron Shelton - MRN 926924' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="Save &amp; Close (F2)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;">
+                              <uix:TargetAnchorable.Anchors>
+                                <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                                  <uix:Target DesignTimeRectangle="424, 631, 188, 34" ElementType="Button" FriendlyName="'Print (F7)'" FullSelectorArgument="&lt;ctrl name='Print (F7)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='Print (F7)' role='push button' automationid='' check:text='Print (F7)' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAAMAAAAAmCAYAAACSwZSYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAU5SURBVHhe7Z0hkKtKEEVXroyMjYx8EotEIrFIJHLsSCRyLBKJHItEIrGRK1fed5tNUmRCsvurfu3/FVqcemGmZxhC355uyNZ7+/z8hKJsFRWAsmlUAMqmefv4+ICibJW3rusg9H0/N3jv52NFeUXEv8XPxd/l+G0cx/ngIgBplM/SriivxMXpLwIQ3k6n0/XgIgAxlnZFeSXEr1UAymZRASibRgWgbBoVgLJpVADKplEBKJtGBbDGNPF6BwzDCvweRvavjhPmsfKMecK01n8H7SbaDyP/PT0ew3mn87mn79Yn537UT+b+eZ6zLc+7es4NoAIIoWOc+hplEuG422EXcEwLlM3wzdgSpWng12xCxg5dbZAcSziKYFizIWNXw1UF0spj9NXT9RWVQ2ciHA77u34h4doa3tPOVUjTGv7HYn09VAAhjIqnvkIepUiTAsY5uCsGZZ4jzyyagdH6LnJSAFMP33r4npH2pu8BFEBrS0S7AvUjAdDGVRZFUcFx3unh+hwd+3zuvkXTLPpqi6qI8X5MUTqPnvdz6BzqIkVec8zwZFd7YVQAIVcB5ChKRtKbfo/GsD1OYTqmIUOHxjWoqwq1NTAS9YeWzsoI2/YYONdEm7oWO0s77gyl7A4GztMBpwF9Y1HGEfbvEZKcUX5FOENTwnJMKdFf5ny4vkecnT1NkZRcW8852D6NFELDXSWhsLofCvbFUAGEPBPAJALIkCcJypb5M1ORnE4VRzGdiM6VWrSdQXYZO1IEPI7/ZMhS2qQRbYUjopKRv/domdbkxwN2bwccI4Oq45jrOSUqD2gYpQ0FUPeyhmcCXWeSXaYumWblqGfhXfqk9mhhjgmsY0o03o7bAiqAkKuD0dHziqnOooDsKtgsQxqXdMZLJD7S8UtUfjl2IYC2RMy8O+Jcdcf+wWOoc+zp7Ja7xPg0BZKUqoHh+Qwj9+zsz9bHe3RfoE9cg4WliA5lS5vbfimW22I/1w1OrmHRtwVUACFXBzvi8B4WkO/4wyLTNPLEZuGIhUMrUXVVANwBdozgTIO82Jzbol0O20gu/kQA5/mKjOlVRef9bn0J7Zr+9nokbStZGHNNxjNtC+oWEUBvI2S25u7DuRd9W0AFEHJ1sPUis2WK0kuqEDr7zdhQABlTDDq72IRt3wmAO4jsMEXVBQJYWZ+sLSxm+xqmKBBnFTo6f/i0ZxZAFSMzKgAVgLDm2Gv8lgBYQ6TcAe4F8M36zgyOdkWO1PIe8lgFcIsKIOR/JQBG86FGkTK1se3X+H8kgAmtYcHOFEiK9jUbEYA3f5Bb91WjrNi8MiqAkP9CABUL5X02PwHq5Q3t9TySzrSwkupwvtU642obImN7uDyDMRXcsG4zcT1Ntkcpj27lKdOdzWujAgj5bQGcmIK0FsVxhz1FYKQwXp5njuIxnfjBk6Yb2yVn8cQpivyRAAaMg0Mh4nPnIv3O5rVRAdxBx/nR29w1u6BNojkdvhOnZnozR/a7tq/jvmUEphNe7RaMnZ1fhBVG6gDa/3R9pxE97533FN2Kc8tLOl9nSHKHxg93590CKoAAuU556TS/sX2C2PzadzJ6tLVlGmRgmac//THeT5G30G0Nk+cwLe918H5gK6gAAuQ6U3m7G8dPEZvf/E5G36B1dv4h3r8iAIrKt45ibmbn32L0F1QAyqZRASibRgWgbBoVgLJpVADKplkVgPy9aCgA+bnt19+RKsrrIH59JwBpEJYCUJRX5iIA+TzvAIJsEdKxVIyivCLi5+Lv8ln/hxhl06gAlA3zib8Rk5jJAttS4QAAAABJRU5ErkJggg==" SearchSteps="Selector, FuzzySelector, Image" Text="Print (F7)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                                </scg:List>
+                              </uix:TargetAnchorable.Anchors>
+                            </uix:TargetAnchorable>
+                          </uix:NClick.Target>
+                        </uix:NClick>
+                      </Sequence>
+                    </ActivityAction>
+                  </uix:NApplicationCard.Body>
+                  <uix:NApplicationCard.TargetApp>
+                    <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="0a6f7d22d5ba478220610c92331caca1.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Patient Information For Carron Shelton - MRN 926924'/&gt;" />
+                  </uix:NApplicationCard.TargetApp>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </uix:NApplicationCard>
+              </Sequence>
+            </ui:CommentOut.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:CommentOut>
+          <ui:SendHotkey ClickBeforeTyping="{x:Null}" DelayBefore="{x:Null}" DelayBetweenKeys="{x:Null}" DelayMS="{x:Null}" EmptyField="{x:Null}" SendWindowMessages="{x:Null}" SpecialKey="{x:Null}" Activate="True" DisplayName="Send Hotkey 'cpr.exe Victoria'" sap:VirtualizedContainerService.HintSize="433.6,156" sap2010:WorkflowViewState.IdRef="SendHotkey_1" Key="N" KeyModifiers="None">
+            <ui:SendHotkey.Target>
+              <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="20ec7f1d-328a-4b0b-af1a-f0f3ca494822" InformativeScreenshot="5950df1f2ad4aa292b2744102f70955f" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='* - Patient Menu (MRN: *)' /&gt;">
+                <ui:Target.TimeoutMS>
+                  <InArgument x:TypeArguments="x:Int32" />
+                </ui:Target.TimeoutMS>
+                <ui:Target.WaitForReady>
+                  <InArgument x:TypeArguments="ui:WaitForReady" />
+                </ui:Target.WaitForReady>
+              </ui:Target>
+            </ui:SendHotkey.Target>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:SendHotkey>
+          <ui:ExcelApplicationScope Password="{x:Null}" DisplayName="Excel Application Scope" sap:VirtualizedContainerService.HintSize="433.6,418.4" sap2010:WorkflowViewState.IdRef="ExcelApplicationScope_2" WorkbookPath="[in_Config(&quot;InputDts&quot;).ToString]">
+            <ui:ExcelApplicationScope.Body>
+              <ActivityAction x:TypeArguments="ui:WorkbookApplication">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="ui:WorkbookApplication" Name="ExcelWorkbookScope" />
+                </ActivityAction.Argument>
+                <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="375.2,308.8" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:ExcelWriteCell Cell="[&quot;B&quot;+(in_Transactionnumber+1).ToString]" DisplayName="Write payor tickno" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_3" SheetName="Sheet2" Text="[in_TransactionItem.SpecificContent(&quot;Tickets&quot;).ToString]" />
+                  <ui:ExcelWriteCell Cell="[&quot;C&quot;+(in_Transactionnumber+1).ToString]" DisplayName="write payortype" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="ExcelWriteCell_4" SheetName="Sheet2" Text="[ExtractDataTable.Rows(0).Item(1).ToString]" />
+                </Sequence>
+              </ActivityAction>
+            </ui:ExcelApplicationScope.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:ExcelApplicationScope>
+          <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="433.6,92.8" sap2010:WorkflowViewState.IdRef="LogMessage_1" Level="Info" Message="[&quot;Payor in first line item number for ticket &quot;+in_TransactionItem.SpecificContent(&quot;Tickets&quot;).tostring+&quot; is &quot;+PBM_PayorType]" />
+          <ui:ClearDataTable DataTable="[ExtractDataTable]" DisplayName="Clear Data Table" sap:VirtualizedContainerService.HintSize="433.6,22.4" sap2010:WorkflowViewState.IdRef="ClearDataTable_1" />
+        </Sequence>
+      </If.Else>
+    </If>
+  </Sequence>
+</Activity>

@@ -1,0 +1,258 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="CprLogout" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="1104,701.6" sap2010:WorkflowViewState.IdRef="CprLogout_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sco="clr-namespace:System.Collections.ObjectModel;assembly=mscorlib" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:uix="http://schemas.uipath.com/workflow/activities/uix" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="44">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>UiPath.UIAutomationNext.Enums</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="17">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Flowchart DisplayName="CprLogout" sap:VirtualizedContainerService.HintSize="780,636.8" sap2010:WorkflowViewState.IdRef="Flowchart_1">
+    <Flowchart.Variables>
+      <Variable x:TypeArguments="x:Boolean" Name="loginPage" />
+      <Variable x:TypeArguments="x:String" Name="Command" />
+      <Variable x:TypeArguments="sco:Collection(x:String)" Name="PSOutput" />
+    </Flowchart.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <av:Point x:Key="ShapeLocation">270,2.5</av:Point>
+        <av:Size x:Key="ShapeSize">60,75.2</av:Size>
+        <av:PointCollection x:Key="ConnectorLocation">330,40.1 360,40.1 360,30 484,30</av:PointCollection>
+        <x:Double x:Key="Width">746.4</x:Double>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <Flowchart.StartNode>
+      <x:Reference>__ReferenceID5</x:Reference>
+    </Flowchart.StartNode>
+    <FlowStep>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <av:Point x:Key="ShapeLocation">200,127.7</av:Point>
+          <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+          <av:PointCollection x:Key="ConnectorLocation">300,180.5 300,229</av:PointCollection>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <uix:NApplicationCard AttachMode="ByInstance" CloseMode="Never" ContinueOnError="True" DisplayName="Use Remote Desktop: *** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 992164  •  1234 CP" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="NApplicationCard_1" OpenMode="Never" Timeout="10" Version="V1">
+        <uix:NApplicationCard.Body>
+          <ActivityAction x:TypeArguments="x:Object">
+            <ActivityAction.Argument>
+              <DelegateInArgument x:TypeArguments="x:Object" Name="WSSessionData" />
+            </ActivityAction.Argument>
+            <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="376,466" sap2010:WorkflowViewState.IdRef="Sequence_1">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <uix:NClick ClickType="Single" ContinueOnError="True" DisplayName="Click 'btn1'" sap:VirtualizedContainerService.HintSize="334,166" sap2010:WorkflowViewState.IdRef="NClick_1" KeyModifiers="None" MouseButton="Left" Timeout="10">
+                <uix:NClick.Target>
+                  <uix:TargetAnchorable DesignTimeRectangle="11, 55, 49, 49" ElementType="Button" FriendlyName="'btn1'" FullSelectorArgument="&lt;wnd cls='cpr9c*' idx='1' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='btn1' role='push button' /&gt;" FuzzySelectorArgument="&lt;wnd cls='cpr9c*' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='btn1' role='push button' automationid='' check:text='btn1' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAADEAAAAxCAYAAABznEEcAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAGDSURBVGhD7ZihkoMwEIYjkUgsj1CJRfIIWCSPUIusRGKRPAIWiURiI5HIvfx0mLnjyF0DvZnlZsU3pZkG/o+wO6FKa01XR83zTFdHJLggElywSqDqx3FkxzRN37JaJTChaRoqisKZuq6p67o/wVkCgZRShoB8PyDPe4Jj25hSHqVpSm3b7oY4y0EJ3zBQVY2U55riWJuTjSa03h1TKjbfYyrL8svF38VBCdxdTbcbURiSCUoURWTGaHdMqYSfBB6VPB/pfp9fIgwZSgRBsByDvu+tDMOwXCBJGEugUz0eDysIjbbMWgKTP+8c92C/EmiZ6P82sFLsJfDcQ+Qn2EusIjaksB04JYHJ20Lewn4l8MzvFfSKFLYDpyRWERtS2A6cksDkbSFvYbsSeCmKzD4bwV7BN/tyfLKRQNfBW9o26G9kWcZHApPQdaqqWkK5gBuwDfAODklwQyS4IBJcEAkuiAQXRIILIsEFkeDC5SXwh4STBH7Mkb2sVokrIRJc+AcSM30Aib9l9FZEu8EAAAAASUVORK5CYII=" InformativeScreenshot="6ffe9fc6a19da9b98cd2cf64f640ed7b.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="btn1" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;">
+                    <uix:TargetAnchorable.Anchors>
+                      <scg:List x:TypeArguments="uix:ITarget" Capacity="1">
+                        <uix:Target DesignTimeRectangle="56, 55, 49, 49" ElementType="Button" FriendlyName="'btn3'" FullSelectorArgument="&lt;wnd cls='cpr9c*' idx='1' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='btn3' role='push button' /&gt;" FuzzySelectorArgument="&lt;wnd cls='cpr9c*' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='CPR+ Toolbar' role='tool bar' /&gt;&lt;ctrl name='btn3' role='push button' automationid='' check:text='btn3' /&gt;" ImageBase64="iVBORw0KGgoAAAANSUhEUgAAADEAAAAxCAYAAABznEEcAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAALDSURBVGhD7Zcrk+pAEEaRSCR/AYlci0Qi+QtIJBaJRGKRkUhsJBKJRUZGzu0zW82d6jvDJuxudrZuuuoUxWQe/fVjAoP7/e5+O4O6rt1vpxeRC72IXOhF5EIvIhd6Ebnwf4qoqspdr9cf4Xa7+fOtT61FFEXhRqPRjzCZTLwQ61NSxOFwcLPZ7B+m06nfkOen06lzWmUiJYJojMdj/zueFF8uF/9ZluUjSm2tFsfK3c5VlMz57K7H49+xzcbdBMb8XOMnJEXg3FEWhuz3e7dcLh8icPwsh/JJmbGGSLU1HC5k37vsg7Pldutq2f8k51yEUjJfzufvcyO+JkVopEMQslgsfDnhsP6zsmjK7dgzq2SOP5u1zOW7CCjkvPLtzdWviNhKNMKmUobDoRsMBtFnyk7KgPq1Yykj6nuaVtZQQmTFj4mIq5xXynnFKyKItJZPCH2BU2TFNp2iZYbjwFwymTLOoxdwnL64y9mPMdmvEhjTuZakCKBRcUah2cOeSBmlw1qFvb7KrI/woQhtaqDE3qQ+yQSCaGYg8tZYj1DbVzHaCA39U56KoDSIOn0QQk8wrpAda2QDcZSkllUKAsJ5Tcz6CE9F4AiR2sg9vV6vPbHbKXXzxPZM0dRia5+KABUClE6TnsBYh1DWhCUZgzmc1cSsf5AUQSlp9BUE8MampFarlc8Q4Ig19qDW9aZ6BnOY38RCH5WkCGoVhy3aI1y1c7m7ASG2pNjDNnaYvfDZtzU2EbINyO0UKyctHdapMWYbm4ypWEpIx7+tsTkMR0MosVRPsMZauB8Rx3FEheNKU4ut/bCxQ8hO08a2xnrWfPblF/qjdCbiqyzm10si7Bu7Kyhnytz69ZKI8O3dFQSOf5VajiGtRYRv7y7hQkDApzNBH+jd3jWxDCitRORKLyIXehG50IvIhV5ELvQicqEXkQe1+wNWYfELfku16wAAAABJRU5ErkJggg==" SearchSteps="Selector, FuzzySelector, Image" Text="btn3" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                      </scg:List>
+                    </uix:TargetAnchorable.Anchors>
+                  </uix:TargetAnchorable>
+                </uix:NClick.Target>
+              </uix:NClick>
+              <uix:NClick ClickType="Single" ContinueOnError="True" DisplayName="Click 'Exit CPR+ (9)'" sap:VirtualizedContainerService.HintSize="334,166" sap2010:WorkflowViewState.IdRef="NClick_2" KeyModifiers="None" MouseButton="Left" Timeout="10">
+                <uix:NClick.Target>
+                  <uix:TargetAnchorable DesignTimeRectangle="18, 390, 250, 37" ElementType="Button" FriendlyName="'Exit CPR+ (9)'" FullSelectorArgument="&lt;ctrl name='     Exit CPR+ (9)' role='push button' /&gt;" FuzzySelectorArgument="&lt;ctrl name='     Exit CPR+ (9)' role='push button' automationid='' check:text='Exit CPR+ (9)' /&gt;" ImageBase64="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" InformativeScreenshot="0c8d702d0397d84efe358fe5d8376286.png" ScopeSelectorArgument="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='Main Menu' /&gt;" SearchSteps="Selector, FuzzySelector, Image" Text="Exit CPR+ (9)" TextMethod="AttributeText" TextSelector="&lt;ctrl role='push button' /&gt;" />
+                </uix:NClick.Target>
+              </uix:NClick>
+            </Sequence>
+          </ActivityAction>
+        </uix:NApplicationCard.Body>
+        <uix:NApplicationCard.TargetApp>
+          <uix:TargetApp FilePath="C:\Program Files\CPR_Launch_Prod\cpr.exe" IconBase64="iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAL0SURBVFhH7dXbS9NhGAfwNwqiAzEUgugAljdBgoHWRUgXWV5FdrNyaJHloZppaqUrkTxEmjXD1MpIzUM6ZdNSp1lqU0udbpZDjTxlluhV/8G3Pb/sh2sPc6Dd+cJnFw/b9/3+YHsmgDa3LPdwmYQdcpZ7uEzCDjkKxeYSynHHwnsdDpdJ2CGHMoZnf6HBNo/6z3OsqoGfMI3NSSXMUz+EdWZexmUSdsih0HLzDM5VjEBZbGMF5lsRW2SUCnTYvgjL9zkZl0nYIYdCCzsnEPioH/73eli+qUaEZTyTCryxDon+6VkZl0nYIYdC8zq+IuDBR/hkmlh7NfUIuf1EKtAyMCj6pmZkXCZhhxwK1b4bhV/We3invmV5JdZCmVogFTD2W0TP5DcZl0nYIYdCs1ts2JfWiu1JTaxtVypx8maeVKCxzyw+jE/IuEzCDjkUmmkchHdKEzzi61iK6FIcT86VCrzu7RVdY2MyLpOwQw6F3jFasTPpFTaqa1gbIkoQnPZUKtBtv7RvclLGZRLpxd0lk6w3Y1uiAWujXvIiynEsu4797L/oTrkADXrGp1FkGkZBu81JYYcNaQ0WBOW2QhGrg7BfxFkTWY49Gj0iXnRC2/qJzcputqJ2YEgq4VDgrtGC/emN2K2pc+KVXIcd1/XS5euiKtjLCRVYf7ESHnE67LphYLM2qatwIuO5c4Fbhl54xtWwwSsqtABHE7JWC6wWcC6grjRBnLUvEWWOs9NaiLDHEOHF9pAy59C/zpdCnLH/GakeQpy6z2cFp+FwdIpzgZxqAwIiNfAPueTkUPg1HIzTYutl+8/ngosC9gfwDEmHjyoBB1RqNstPGQVVzFXHAu5uwiBtk8s9IELz4Rv+5+mW4rAJ3UEfitd1Y0tMNX85sRc4EpcpXVBYoxNlLc0yLpOwQw6FLvlFXfQFM3R3ifbRERmXSdghZ7XAagEKdbmsyKIlo/8fBVwtK7J4yax4AXeXFVl4r8PhMgk75Cz3cJlAm/gNv2mh7NsUB54AAAAASUVORK5CYII=" InformativeScreenshot="c2a09fff5be562df823193485b8ecda4.png" Selector="&lt;wnd app='cpr.exe' cls='cpr9c*' isremoteapp='1' title='*** CPR+ OPTUM INFUSION *** 2022 R3   Enterprise •  License # 99*'/&gt;" />
+        </uix:NApplicationCard.TargetApp>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </uix:NApplicationCard>
+      <FlowStep.Next>
+        <FlowStep x:Name="__ReferenceID0">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <av:Point x:Key="ShapeLocation">200,229</av:Point>
+              <av:Size x:Key="ShapeSize">200,22.4</av:Size>
+              <av:PointCollection x:Key="ConnectorLocation">300,251 300,301</av:PointCollection>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:KillProcess Process="{x:Null}" ContinueOnError="True" DisplayName="Kill Process" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="KillProcess_1" ProcessName="Chrome">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:KillProcess>
+          <FlowStep.Next>
+            <FlowStep x:Name="__ReferenceID1">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <av:Point x:Key="ShapeLocation">200,301</av:Point>
+                  <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                  <av:PointCollection x:Key="ConnectorLocation">300,353.8 300,402</av:PointCollection>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <ui:UiElementExists DisplayName="Element Exists 'wfica32.exe Log'" Exists="[loginPage]" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="UiElementExists_1">
+                <ui:UiElementExists.Target>
+                  <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="36f069ce-dc03-4a73-a198-c1290aef77e0" InformativeScreenshot="6e5188f0a63d63f55359496a73601ae8" Selector="&lt;wnd app='wfica32.exe' cls='Transparent Windows Client' title='Log On To CPR+ - \\Remote' /&gt;" TimeoutMS="5000">
+                    <ui:Target.WaitForReady>
+                      <InArgument x:TypeArguments="ui:WaitForReady" />
+                    </ui:Target.WaitForReady>
+                  </ui:Target>
+                </ui:UiElementExists.Target>
+                <sap:WorkflowViewStateService.ViewState>
+                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  </scg:Dictionary>
+                </sap:WorkflowViewStateService.ViewState>
+              </ui:UiElementExists>
+              <FlowStep.Next>
+                <FlowStep x:Name="__ReferenceID2">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <av:Point x:Key="ShapeLocation">200,402</av:Point>
+                      <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <If Condition="[loginPage]" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="If_1">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <If.Then>
+                      <ui:Click AlterIfDisabled="{x:Null}" DelayBefore="{x:Null}" DelayMS="{x:Null}" SendWindowMessages="{x:Null}" SimulateClick="{x:Null}" ClickType="CLICK_SINGLE" DisplayName="Click 'push button'" sap:VirtualizedContainerService.HintSize="334,106" sap2010:WorkflowViewState.IdRef="Click_1" KeyModifiers="None" MouseButton="BTN_LEFT">
+                        <ui:Click.CursorPosition>
+                          <ui:CursorPosition Position="Center">
+                            <ui:CursorPosition.OffsetX>
+                              <InArgument x:TypeArguments="x:Int32" />
+                            </ui:CursorPosition.OffsetX>
+                            <ui:CursorPosition.OffsetY>
+                              <InArgument x:TypeArguments="x:Int32" />
+                            </ui:CursorPosition.OffsetY>
+                          </ui:CursorPosition>
+                        </ui:Click.CursorPosition>
+                        <ui:Click.Target>
+                          <ui:Target ClippingRegion="{x:Null}" Element="{x:Null}" Id="0c207c6c-d59f-4416-8b3d-336ce9bcf8c0" InformativeScreenshot="864da4b2f38d9937205e644473897026" Selector="&lt;wnd app='cpr.exe' cls='cpr*' isremoteapp='1' title='Log On To CPR+' /&gt;&lt;ctrl name='Cancel (Esc)' role='push button' /&gt;">
+                            <ui:Target.TimeoutMS>
+                              <InArgument x:TypeArguments="x:Int32" />
+                            </ui:Target.TimeoutMS>
+                            <ui:Target.WaitForReady>
+                              <InArgument x:TypeArguments="ui:WaitForReady" />
+                            </ui:Target.WaitForReady>
+                          </ui:Target>
+                        </ui:Click.Target>
+                      </ui:Click>
+                    </If.Then>
+                  </If>
+                </FlowStep>
+              </FlowStep.Next>
+            </FlowStep>
+          </FlowStep.Next>
+        </FlowStep>
+      </FlowStep.Next>
+    </FlowStep>
+    <x:Reference>__ReferenceID0</x:Reference>
+    <x:Reference>__ReferenceID1</x:Reference>
+    <x:Reference>__ReferenceID2</x:Reference>
+    <FlowStep x:Name="__ReferenceID3">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <av:Point x:Key="ShapeLocation">515.2,110</av:Point>
+          <av:Size x:Key="ShapeSize">200,52.8</av:Size>
+          <av:PointCollection x:Key="ConnectorLocation">615.2,162.8 615.2,192.8 585.105,192.8 585.105,221.1</av:PointCollection>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:InvokePowerShell x:TypeArguments="x:String" ContinueOnError="{x:Null}" CommandText="[&quot;&amp;&quot;+Command]" DisplayName="Invoke Power Shell" sap:VirtualizedContainerService.HintSize="200,52.8" sap2010:WorkflowViewState.IdRef="InvokePowerShell`1_1" IsScript="True" Output="[PSOutput]" />
+      <FlowStep.Next>
+        <FlowStep x:Name="__ReferenceID4">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <av:Point x:Key="ShapeLocation">485.105,221.1</av:Point>
+              <av:Size x:Key="ShapeSize">200,22.4</av:Size>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:KillProcess Process="{x:Null}" ContinueOnError="True" DisplayName="Kill Process" sap:VirtualizedContainerService.HintSize="200,22.4" sap2010:WorkflowViewState.IdRef="KillProcess_2" ProcessName="Chrome">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:KillProcess>
+        </FlowStep>
+      </FlowStep.Next>
+    </FlowStep>
+    <FlowStep x:Name="__ReferenceID5">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <av:Point x:Key="ShapeLocation">484,0</av:Point>
+          <av:Size x:Key="ShapeSize">262.4,60</av:Size>
+          <av:PointCollection x:Key="ConnectorLocation">615.2,60 615.2,110</av:PointCollection>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <Assign sap:VirtualizedContainerService.HintSize="262.4,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:String">[Command]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:String">["""C:\Program Files (x86)\Citrix\ICA Client\SelfServicePlugin\SelfService.exe"" -logoffSessions"]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <FlowStep.Next>
+        <x:Reference>__ReferenceID3</x:Reference>
+      </FlowStep.Next>
+    </FlowStep>
+    <x:Reference>__ReferenceID4</x:Reference>
+  </Flowchart>
+</Activity>
